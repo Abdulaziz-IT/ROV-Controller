@@ -1,5 +1,4 @@
 
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
@@ -10,7 +9,8 @@ import net.java.games.input.ControllerEnvironment;
 
 public class Interface extends javax.swing.JFrame {
 
-    Controller con=null; 
+    Controller con = null;
+
     public Interface() {
 
         try {
@@ -127,33 +127,54 @@ public class Interface extends javax.swing.JFrame {
 
         con = null;
 
-        for (Controller c : controllers) {
-            if (c == null) {
-                continue;
+        try {
+
+            for (Controller c : controllers) {
+                if (c == null) {
+                    continue;
+                }
+                if (c.getType().toString().equalsIgnoreCase("STICK")) {
+                    con = c;
+                    break;
+                }
             }
-            if (c.getType().toString().equalsIgnoreCase("STICK")) {
-                con = c;
-                break;
-            }
+            
+            
+            controllerNameSpace.setText(con.getName());
+            Component[] components = con.getComponents();
+
+            Component yAxis = components[0];
+            Component xAxis = components[1];
+            Component pov = components[2];
+            Component rz = components[3];
+            Component button0 = components[4];
+            Component button1 = components[5];
+            Component button2 = components[6];
+            Component button3 = components[7];
+            Component button4 = components[8];
+            Component button5 = components[9];
+            Component button6 = components[10];
+            Component button7 = components[11];
+            Component slider = components[12];
+            Component button8 = components[13];
+            Component button9 = components[14];
+            Component button10 = components[15];
+            Component button11 = components[16];
+
+        } catch (NullPointerException e) {
+            
+            System.out.println("no joystick found");
         }
 
-        controllerNameSpace.setText(con.getName());
-        Component[] components = con.getComponents();
-        
-        for (int i = 0; i < components.length; i++) {
-            System.out.println("Component = "+i+" "+components[i].getIdentifier().getName());
-            // System.out.println("Component = "+components[i].getDeadZone());
-        }
-      while(true){
-          con.poll();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-            }
-          System.out.println(components[5].getPollData());  
-      }
-        
-        // TODO add your handling code here:
+//      while(true){
+//          con.poll();
+//            try {
+//                Thread.sleep(1000);
+//            } catch (InterruptedException ex) {
+//            }
+//          System.out.println(components[5].getPollData());  
+//      }
+
     }//GEN-LAST:event_FindControllerButtonActionPerformed
 
     private void controllerNameSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_controllerNameSpaceActionPerformed
@@ -161,9 +182,6 @@ public class Interface extends javax.swing.JFrame {
 
     }//GEN-LAST:event_controllerNameSpaceActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

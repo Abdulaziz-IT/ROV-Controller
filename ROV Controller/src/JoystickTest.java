@@ -1,4 +1,4 @@
-package jinputjoysticktestv2;
+
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
