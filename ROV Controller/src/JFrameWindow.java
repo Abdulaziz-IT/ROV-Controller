@@ -1,4 +1,3 @@
-package jinputjoysticktestv2;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

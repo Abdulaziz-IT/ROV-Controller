@@ -15,7 +15,7 @@ import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
 public class JoystickTest {
-    
+    /*
     public static void main(String args[]) {
         //JInputJoystickTest jinputJoystickTest = new JInputJoystickTest();
         // Writes (into console) informations of all controllers that are found.
@@ -26,7 +26,7 @@ public class JoystickTest {
         
         new JoystickTest();
     }
-    
+    */
     
     final JFrameWindow window;
     private ArrayList<Controller> foundControllers;

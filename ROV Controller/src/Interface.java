@@ -1,6 +1,22 @@
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+/* Buttons according to components:
+            yAxis = comps[0];
+            xAxis = comps[1];
+            pov = comps[2];
+            rz = comps[3];
+            button0 = comps[4];
+            button1 = comps[5];
+            button2 = comps[6];
+            button3 = comps[7];
+            button4 = comps[8];
+            button5 = comps[9];
+            button6 = comps[10];
+            button7 = comps[11];
+            slider = comps[12];
+            button8 = comps[13];
+            button9 = comps[14];
+            button10 = comps[15];
+            button11 = comps[16];
+ */
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import net.java.games.input.Component;
@@ -9,31 +25,14 @@ import net.java.games.input.ControllerEnvironment;
 
 public class Interface extends javax.swing.JFrame {
 
-    Controller con = null;
-    Component yAxis = null;
-    Component xAxis = null;
-    Component pov = null;
-    Component rz = null;
-    Component button0 = null;
-    Component button1 = null;
-    Component button2 = null;
-    Component button3 = null;
-    Component button4 = null;
-    Component button5 = null;
-    Component button6 = null;
-    Component button7 = null;
-    Component slider = null;
-    Component button8 = null;
-    Component button9 = null;
-    Component button10 = null;
-    Component button11 = null;
+    Controller con;
+    Component[] comps;
 
     public Interface() {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
         }
 
         initComponents();
@@ -72,12 +71,6 @@ public class Interface extends javax.swing.JFrame {
         FindControllerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 FindControllerButtonActionPerformed(evt);
-            }
-        });
-
-        controllerNameSpace.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                controllerNameSpaceActionPerformed(evt);
             }
         });
 
@@ -156,15 +149,8 @@ public class Interface extends javax.swing.JFrame {
 
         Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
 
-        Component[] components = null;
-        con = null;
-
         try {
-
             for (Controller c : controllers) {
-                if (c == null) {
-                    continue;
-                }
                 if (c.getType().toString().equalsIgnoreCase("STICK")) {
                     con = c;
                     break;
@@ -173,38 +159,15 @@ public class Interface extends javax.swing.JFrame {
 
             controllerNameSpace.setText(con.getName());
 
-            components = con.getComponents();
-
-            yAxis = components[0];
-            xAxis = components[1];
-            pov = components[2];
-            rz = components[3];
-            button0 = components[4];
-            button1 = components[5];
-            button2 = components[6];
-            button3 = components[7];
-            button4 = components[8];
-            button5 = components[9];
-            button6 = components[10];
-            button7 = components[11];
-            slider = components[12];
-            button8 = components[13];
-            button9 = components[14];
-            button10 = components[15];
-            button11 = components[16];
+            comps = con.getComponents();
 
         } catch (NullPointerException e) {
 
-            System.out.println("no joystick found");
+            System.out.println("Joystick couldn't be found.");
         }
 
 
     }//GEN-LAST:event_FindControllerButtonActionPerformed
-
-    private void controllerNameSpaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_controllerNameSpaceActionPerformed
-
-
-    }//GEN-LAST:event_controllerNameSpaceActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
 
@@ -213,13 +176,13 @@ public class Interface extends javax.swing.JFrame {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
+                System.out.println("In case the thread is interrupted, it's awake now!");
             }
-            String analogData = "x= " + xAxis.getPollData() + ", y= " + yAxis.getPollData();
+            String analogData = "x= " + comps[0].getPollData() + ", y= " + comps[1].getPollData();
             System.out.println(analogData);
             movementTextArea.setText(analogData); // this is not working for some reason
         }
 
-        // TODO add your handling code here:
     }//GEN-LAST:event_startButtonActionPerformed
 
     public static void main(String args[]) {
