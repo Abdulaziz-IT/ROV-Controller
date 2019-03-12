@@ -10,6 +10,23 @@ import net.java.games.input.ControllerEnvironment;
 public class Interface extends javax.swing.JFrame {
 
     Controller con = null;
+    Component yAxis = null;
+    Component xAxis = null;
+    Component pov = null;
+    Component rz = null;
+    Component button0 = null;
+    Component button1 = null;
+    Component button2 = null;
+    Component button3 = null;
+    Component button4 = null;
+    Component button5 = null;
+    Component button6 = null;
+    Component button7 = null;
+    Component slider = null;
+    Component button8 = null;
+    Component button9 = null;
+    Component button10 = null;
+    Component button11 = null;
 
     public Interface() {
 
@@ -36,19 +53,20 @@ public class Interface extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        movementTextArea = new javax.swing.JTextArea();
         FindControllerButton = new javax.swing.JButton();
         controllerNameSpace = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
+        startButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        movementTextArea.setColumns(20);
+        movementTextArea.setRows(5);
+        jScrollPane1.setViewportView(movementTextArea);
 
         FindControllerButton.setText("Find Controller");
         FindControllerButton.addActionListener(new java.awt.event.ActionListener() {
@@ -70,6 +88,13 @@ public class Interface extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTextArea2);
 
         jLabel2.setText("Buttons");
+
+        startButton.setText("Start");
+        startButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                startButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -97,6 +122,10 @@ public class Interface extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addGap(112, 112, 112))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(84, 84, 84)
+                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -105,7 +134,9 @@ public class Interface extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(FindControllerButton)
                     .addComponent(controllerNameSpace, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 117, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
+                .addComponent(startButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
@@ -125,6 +156,7 @@ public class Interface extends javax.swing.JFrame {
 
         Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
 
+        Component[] components = null;
         con = null;
 
         try {
@@ -138,42 +170,34 @@ public class Interface extends javax.swing.JFrame {
                     break;
                 }
             }
-            
-            
-            controllerNameSpace.setText(con.getName());
-            Component[] components = con.getComponents();
 
-            Component yAxis = components[0];
-            Component xAxis = components[1];
-            Component pov = components[2];
-            Component rz = components[3];
-            Component button0 = components[4];
-            Component button1 = components[5];
-            Component button2 = components[6];
-            Component button3 = components[7];
-            Component button4 = components[8];
-            Component button5 = components[9];
-            Component button6 = components[10];
-            Component button7 = components[11];
-            Component slider = components[12];
-            Component button8 = components[13];
-            Component button9 = components[14];
-            Component button10 = components[15];
-            Component button11 = components[16];
+            controllerNameSpace.setText(con.getName());
+
+            components = con.getComponents();
+
+            yAxis = components[0];
+            xAxis = components[1];
+            pov = components[2];
+            rz = components[3];
+            button0 = components[4];
+            button1 = components[5];
+            button2 = components[6];
+            button3 = components[7];
+            button4 = components[8];
+            button5 = components[9];
+            button6 = components[10];
+            button7 = components[11];
+            slider = components[12];
+            button8 = components[13];
+            button9 = components[14];
+            button10 = components[15];
+            button11 = components[16];
 
         } catch (NullPointerException e) {
-            
+
             System.out.println("no joystick found");
         }
 
-//      while(true){
-//          con.poll();
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException ex) {
-//            }
-//          System.out.println(components[5].getPollData());  
-//      }
 
     }//GEN-LAST:event_FindControllerButtonActionPerformed
 
@@ -181,6 +205,22 @@ public class Interface extends javax.swing.JFrame {
 
 
     }//GEN-LAST:event_controllerNameSpaceActionPerformed
+
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+
+        while (true) {
+            con.poll();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+            }
+            String analogData = "x= " + xAxis.getPollData() + ", y= " + yAxis.getPollData();
+            System.out.println(analogData);
+            movementTextArea.setText(analogData); // this is not working for some reason
+        }
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_startButtonActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -221,7 +261,8 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea movementTextArea;
+    private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
 }
