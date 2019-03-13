@@ -23,12 +23,13 @@ import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
-public class Interface extends javax.swing.JFrame {
+public class ROVController extends javax.swing.JFrame {
 
     Controller con;
     Component[] comps;
+    Thread pollThread;
 
-    public Interface() {
+    public ROVController() {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -52,40 +53,50 @@ public class Interface extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        movementTextArea = new javax.swing.JTextArea();
-        FindControllerButton = new javax.swing.JButton();
+        movementOutput = new javax.swing.JTextArea();
+        findControllerButton = new javax.swing.JButton();
         controllerNameSpace = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        movementLabel = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jLabel2 = new javax.swing.JLabel();
+        buttonsOutput = new javax.swing.JTextArea();
+        buttonsLabel = new javax.swing.JLabel();
         startButton = new javax.swing.JButton();
+        stopButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        movementTextArea.setColumns(20);
-        movementTextArea.setRows(5);
-        jScrollPane1.setViewportView(movementTextArea);
+        movementOutput.setColumns(20);
+        movementOutput.setRows(5);
+        jScrollPane1.setViewportView(movementOutput);
 
-        FindControllerButton.setText("Find Controller");
-        FindControllerButton.addActionListener(new java.awt.event.ActionListener() {
+        findControllerButton.setText("Find Controller");
+        findControllerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                FindControllerButtonActionPerformed(evt);
+                findControllerButtonActionPerformed(evt);
             }
         });
 
-        jLabel1.setText("Movement");
+        movementLabel.setText("Movement");
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
+        buttonsOutput.setColumns(20);
+        buttonsOutput.setRows(5);
+        jScrollPane2.setViewportView(buttonsOutput);
 
-        jLabel2.setText("Buttons");
+        buttonsLabel.setText("Buttons");
 
         startButton.setText("Start");
+        startButton.setEnabled(false);
         startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startButtonActionPerformed(evt);
+            }
+        });
+
+        stopButton.setText("Stop");
+        stopButton.setEnabled(false);
+        stopButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopButtonActionPerformed(evt);
             }
         });
 
@@ -95,7 +106,7 @@ public class Interface extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(FindControllerButton)
+                .addComponent(findControllerButton)
                 .addGap(79, 79, 79)
                 .addComponent(controllerNameSpace, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(65, 65, 65))
@@ -106,18 +117,20 @@ public class Interface extends javax.swing.JFrame {
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(144, 144, 144)
-                        .addComponent(jLabel2)))
+                        .addComponent(buttonsLabel)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(42, 42, 42))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(movementLabel)
                         .addGap(112, 112, 112))))
             .addGroup(layout.createSequentialGroup()
                 .addGap(84, 84, 84)
-                .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(startButton, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -125,18 +138,20 @@ public class Interface extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(FindControllerButton)
+                    .addComponent(findControllerButton)
                     .addComponent(controllerNameSpace, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addComponent(startButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(stopButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(movementLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addComponent(buttonsLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(43, 43, 43))
@@ -145,10 +160,9 @@ public class Interface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void FindControllerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FindControllerButtonActionPerformed
+    private void findControllerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findControllerButtonActionPerformed
 
         Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
-
         try {
             for (Controller c : controllers) {
                 if (c.getType().toString().equalsIgnoreCase("STICK")) {
@@ -156,34 +170,33 @@ public class Interface extends javax.swing.JFrame {
                     break;
                 }
             }
-
-            controllerNameSpace.setText(con.getName());
-
-            comps = con.getComponents();
-
-        } catch (NullPointerException e) {
-
-            System.out.println("Joystick couldn't be found.");
+            if (con == null) {
+                throw new JoyStickNotFound();
+            }
+        } catch (JoyStickNotFound e) {
+            System.out.println(e.getMessage());
+            System.exit(0);
         }
+        controllerNameSpace.setText(con.getName());
+        comps = con.getComponents();
+        startButton.setEnabled(true);
 
-
-    }//GEN-LAST:event_FindControllerButtonActionPerformed
+    }//GEN-LAST:event_findControllerButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
 
-        while (true) {
-            con.poll();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                System.out.println("In case the thread is interrupted, it's awake now!");
-            }
-            String analogData = "x= " + comps[0].getPollData() + ", y= " + comps[1].getPollData();
-            System.out.println(analogData);
-            movementTextArea.setText(analogData); // this is not working for some reason
-        }
+        pollThread = new PollingData(con, movementOutput);
+        pollThread.start();
+        startButton.setEnabled(false);
+        stopButton.setEnabled(true);
 
     }//GEN-LAST:event_startButtonActionPerformed
+
+    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
+        pollThread.interrupt();
+        stopButton.setEnabled(false);
+        startButton.setEnabled(true);
+    }//GEN-LAST:event_stopButtonActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -199,33 +212,36 @@ public class Interface extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ROVController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ROVController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ROVController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Interface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ROVController.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Interface().setVisible(true);
+                new ROVController().setVisible(true);
             }
         });
     }
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton FindControllerButton;
+    private javax.swing.JLabel buttonsLabel;
+    private javax.swing.JTextArea buttonsOutput;
     private javax.swing.JTextField controllerNameSpace;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton findControllerButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextArea movementTextArea;
+    private javax.swing.JLabel movementLabel;
+    private javax.swing.JTextArea movementOutput;
     private javax.swing.JButton startButton;
+    private javax.swing.JButton stopButton;
     // End of variables declaration//GEN-END:variables
 }

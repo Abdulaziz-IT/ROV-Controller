@@ -5,12 +5,13 @@ import java.sql.SQLException;
 
 public class Database {
 
+    Connection conn;
+
     public void openConnection() {
         //JInputJoystick joystick = new JInputJoystick(Controller.Type.GAMEPAD);
         String URL = "jdbc:mariadb://137.135.109.234:3306/ROV_DB";
         String USER = "ROV";
         String PASS = "ROV123";
-        Connection conn;
         try {
             conn = DriverManager.getConnection(URL, USER, PASS);
         } catch (SQLException ex) {
