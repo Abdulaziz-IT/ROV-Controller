@@ -1,32 +1,12 @@
-/* Buttons according to components:
-            yAxis = comps[0];
-            xAxis = comps[1];
-            pov = comps[2];
-            rz = comps[3];
-            button0 = comps[4];
-            button1 = comps[5];
-            button2 = comps[6];
-            button3 = comps[7];
-            button4 = comps[8];
-            button5 = comps[9];
-            button6 = comps[10];
-            button7 = comps[11];
-            slider = comps[12];
-            button8 = comps[13];
-            button9 = comps[14];
-            button10 = comps[15];
-            button11 = comps[16];
- */
+
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 
 public class ROVController extends javax.swing.JFrame {
 
     Controller con;
-    Component[] comps;
     Thread pollThread;
 
     public ROVController() {
@@ -178,14 +158,13 @@ public class ROVController extends javax.swing.JFrame {
             System.exit(0);
         }
         controllerNameSpace.setText(con.getName());
-        comps = con.getComponents();
         startButton.setEnabled(true);
 
     }//GEN-LAST:event_findControllerButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
 
-        pollThread = new PollingData(con, movementOutput);
+        pollThread = new PollingData(con, movementOutput, buttonsOutput);
         pollThread.start();
         startButton.setEnabled(false);
         stopButton.setEnabled(true);
