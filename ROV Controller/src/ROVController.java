@@ -247,12 +247,10 @@ public class ROVController extends javax.swing.JFrame {
     }//GEN-LAST:event_findControllerButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-
         pollThread = new PollingData(con, movementOutput, buttonsOutput);
         pollThread.start();
         startButton.setEnabled(false);
         stopButton.setEnabled(true);
-
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
@@ -302,6 +300,7 @@ public class ROVController extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new ROVController().setVisible(true);
             }
