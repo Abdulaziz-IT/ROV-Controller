@@ -1,5 +1,4 @@
 
-import java.io.IOException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import net.java.games.input.Controller;
@@ -298,14 +297,6 @@ public class ROVController extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
-        try {
-            SocketConnection conn = new SocketConnection("127.0.0.1", 9090);
-            conn.sendToRov("left");
-            conn.closeConnection();
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-        }
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {

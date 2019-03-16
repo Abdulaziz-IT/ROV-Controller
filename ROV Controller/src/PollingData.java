@@ -46,8 +46,7 @@ public class PollingData extends Thread {
             //String analogData = "y= " + comps[0].getPollData() + ", x= " + comps[1].getPollData();
             //System.out.println(analogData);
             String movement = null; // string that will be sent to the Server
-            String button = null;
-            SocketConnection con = null;
+            String button;
             if (comps[1].getPollData() == -1.0f) {
                 movement = "left";
                 movementOutput.setText("It's moving "+movement+".");
@@ -94,18 +93,6 @@ public class PollingData extends Thread {
                 }
             }
             
-             try {
-                    con = new SocketConnection("127.0.0.1", 9090);
-                    
-                    if(movement!=null && button!=null)
-                    con.sendToRov(movement+":"+button);
-                    else if(movement!=null)
-                    con.sendToRov(movement);
-                    else if(button!=null)
-                    con.sendToRov(button);
-                } catch (IOException ex) {
-                    System.out.println(ex.getMessage());
-                }
             //output.setText(analogData + "\n" + movementOutput.getText());
             //movementOutput.setText(analogData);
         }
