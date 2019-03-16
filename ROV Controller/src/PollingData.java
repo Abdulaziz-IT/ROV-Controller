@@ -17,6 +17,9 @@
             button10 = comps[15]; (11)
             button11 = comps[16]; (12)
  */
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTextArea;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
@@ -42,19 +45,28 @@ public class PollingData extends Thread {
 
             //String analogData = "y= " + comps[0].getPollData() + ", x= " + comps[1].getPollData();
             //System.out.println(analogData);
+            String movement = null; // string that will be sent to the Server
+            String button = null;
+            SocketConnection con = null;
             if (comps[1].getPollData() == -1.0f) {
-                movementOutput.setText("It's moving left.");
+                movement = "left";
+                movementOutput.setText("It's moving "+movement+".");
                 moving = true;
             } else if (comps[1].getPollData() == 1.0f) {
-                movementOutput.setText("It's moving right.");
+                movement = "right";
+                movementOutput.setText("It's moving "+movement+".");
                 moving = true;
             } else if (comps[0].getPollData() == -1.0f) {
-                movementOutput.setText("It's moving forward.");
+                movement = "forward";
+                movementOutput.setText("It's moving "+movement+".");
                 moving = true;
             } else if (comps[0].getPollData() == 1.0f) {
-                movementOutput.setText("It's moving backward.");
+                movement = "backward";
+                movementOutput.setText("It's moving "+movement+".");
                 moving = true;
             }
+            
+            
             for (int i = 0; i < comps.length; i++) {
                 if (!comps[i].isAnalog()) {
                     if (comps[i].getPollData() == 1.0f) {
@@ -62,10 +74,13 @@ public class PollingData extends Thread {
                             continue;
                         }
                         String buttonName = Integer.parseInt(comps[i].getIdentifier().getName()) + 1 + "";
+                        button = "button"+i;
                         if (i == 4) {
                             buttonName = "Trigger";
+                            button = "Trigger";
                         } else if (i == 5) {
                             buttonName = "Thumb";
+                            button = "Thumb";
                         }
                         buttonOutput.setText("Button (" + buttonName + ") is pressed.");
                     }
@@ -78,6 +93,19 @@ public class PollingData extends Thread {
                     moving = false;
                 }
             }
+            
+             try {
+                    con = new SocketConnection("127.0.0.1", 9090);
+                    
+                    if(movement!=null && button!=null)
+                    con.sendToRov(movement+":"+button);
+                    else if(movement!=null)
+                    con.sendToRov(movement);
+                    else if(button!=null)
+                    con.sendToRov(button);
+                } catch (IOException ex) {
+                    System.out.println(ex.getMessage());
+                }
             //output.setText(analogData + "\n" + movementOutput.getText());
             //movementOutput.setText(analogData);
         }
