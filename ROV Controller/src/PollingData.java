@@ -18,8 +18,6 @@
             button11 = comps[16]; (12)
  */
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JTextArea;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
@@ -43,8 +41,6 @@ public class PollingData extends Thread {
         while (!this.isInterrupted()) {
             c.poll();
 
-            //String analogData = "y= " + comps[0].getPollData() + ", x= " + comps[1].getPollData();
-            //System.out.println(analogData);
             String movement = null; // string that will be sent to the Server
             String button;
             if (comps[1].getPollData() == -1.0f) {
