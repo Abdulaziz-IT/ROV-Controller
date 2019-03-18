@@ -13,6 +13,8 @@ Servo frontRight;
 //Commands to be read
 String command;
 
+//Moving state
+bool moving = false;
 //Pins:
 /*
 back left	=	3
@@ -45,72 +47,79 @@ void loop() {
 		Serial.println("Test passed");
 	} else if (command == "front") {
 		moveFront();
+		moving = true;
 	} else if (command == "back") {
 		moveBack();
+		moving = true;
 	} else if (command == "left") {
 		moveLeft();
+		moving = true;
 	} else if (command == "right") {
 		moveRight();
+		moving = true;
 	} else if (command == "up") {
 		moveUp();
+		moving = true;
 	} else if (command == "down") {
 		moveDown();
-	} else if (command == "stop") {
+		moving = true;
+	} else if (command == "stop" && moving) {
 		stopMoving();
+		moving = false;
 	}
 	
 }
 
 void moveFront() {
 		backLeft.writeMicroseconds(1650);
-		backRight.writeMicroseconds(1650); 
-		frontLeft.writeMicroseconds(1650); 
-		frontRight.writeMicroseconds(1650); 		
+		backRight.writeMicroseconds(1650);
+		frontLeft.writeMicroseconds(1650);
+		frontRight.writeMicroseconds(1650);
 		Serial.println("ROV is moving front");
 }
 
 void moveBack() {
-		backLeft.writeMicroseconds(1350); 
-		backRight.writeMicroseconds(1350); 
-		frontLeft.writeMicroseconds(1350); 
-		frontRight.writeMicroseconds(1350); 
+		backLeft.writeMicroseconds(1350);
+		backRight.writeMicroseconds(1350);
+		frontLeft.writeMicroseconds(1350);
+		frontRight.writeMicroseconds(1350);
 		Serial.println("ROV is moving back");
 }
 
 void moveLeft() {
 		backLeft.writeMicroseconds(1650);
 		frontLeft.writeMicroseconds(1650);
-		backRight.writeMicroseconds(1350); 
-		frontRight.writeMicroseconds(1350); 		
+		backRight.writeMicroseconds(1350);
+		frontRight.writeMicroseconds(1350);
 		Serial.println("ROV is moving left");
 }
 
 void moveRight() {
 		backLeft.writeMicroseconds(1350);
 		frontLeft.writeMicroseconds(1350);
-		backRight.writeMicroseconds(1650); 
-		frontRight.writeMicroseconds(1650); 		
+		backRight.writeMicroseconds(1650);
+		frontRight.writeMicroseconds(1650);	
 		Serial.println("ROV is moving right");
 }
 
 void moveUp() {
-		midLeft.writeMicroseconds(1650); 
-		midRight.writeMicroseconds(1650); 
+		midLeft.writeMicroseconds(1650);
+		midRight.writeMicroseconds(1650);
 		Serial.println("ROV is moving up");
 }
 
 void moveDown() {
-		midLeft.writeMicroseconds(1350); 
-		midRight.writeMicroseconds(1350); 
+		midLeft.writeMicroseconds(1350);
+		midRight.writeMicroseconds(1350);
 		Serial.println("ROV is moving down");
 }
 
 void stopMoving() {
-		backLeft.writeMicroseconds(1500); 
-		backRight.writeMicroseconds(1500); 
-		midLeft.writeMicroseconds(1500); 
-		midRight.writeMicroseconds(1500); 
-		frontLeft.writeMicroseconds(1500); 
-		frontRight.writeMicroseconds(1500); 		
+		backLeft.writeMicroseconds(1500);
+		backRight.writeMicroseconds(1500);
+		midLeft.writeMicroseconds(1500);
+		midRight.writeMicroseconds(1500);
+		frontLeft.writeMicroseconds(1500);
+		frontRight.writeMicroseconds(1500);
 		Serial.println("ROV STOPPED");
 }
