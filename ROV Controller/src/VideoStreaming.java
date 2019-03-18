@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -13,48 +14,55 @@ import org.opencv.videoio.VideoCapture;
 
 //Abdulaziz Waleed Alshememry.
 public class VideoStreaming extends Thread {
-    
+
     Mat frame = new Mat();
     MatOfByte mem = new MatOfByte();
     int width, height;
     JPanel panel;
+    JButton start;
+    JButton stop;
 
-    public VideoStreaming(int width, int height, JPanel panel) {
+    public VideoStreaming(int width, int height, JPanel panel, JButton start, JButton stop) {
         this.width = width;
         this.height = height;
         this.panel = panel;
+        this.start = start;
+        this.stop = stop;
     }
 
     @Override
     public void run() {
-        try {
         VideoCapture webSource = new VideoCapture(0);
+        try {
             if (!webSource.isOpened()) {
                 throw new CameraNotFound();
             }
-        while (!this.isInterrupted()) {
-            if (webSource.grab()) { //Grabbing next frame.
-                try {
-                    webSource.retrieve(frame); //Decodes and returns the grabbed video frame.
-                    Imgcodecs.imencode(".bmp", frame, mem); //compresses the image and stores it in the memory buffer that is resized to fit the result.
-                    Image im = ImageIO.read(new ByteArrayInputStream(mem.toArray()));
-                    BufferedImage buff = (BufferedImage) im;
-                    Graphics g = panel.getGraphics();
-                    if (this.isInterrupted()) {
-                        break;
+            while (!this.isInterrupted()) {
+                if (webSource.grab()) { //Grabbing next frame.
+                    try {
+                        webSource.retrieve(frame); //Decodes and returns the grabbed video frame.
+                        Imgcodecs.imencode(".jpg", frame, mem); //compresses the image and stores it in the memory buffer that is resized to fit the result.
+                        BufferedImage image = ImageIO.read(new ByteArrayInputStream(mem.toArray()));
+                        Graphics g = panel.getGraphics();
+                        if (this.isInterrupted()) {
+                            break;
+                        }
+                        g.drawImage(image, 0, 0, width, height, 0, 0, image.getWidth(), image.getHeight(), null); //This has a problem with interrupt                        
+                    } catch (IOException ex) {
+                        System.out.println("Couldn't convert from bytes to image.");
                     }
-                    g.drawImage(buff, 0, 0, width, height, 0, 0, buff.getWidth(), buff.getHeight(), null); //This has a problem with interrupt
-                } catch (IOException ex) {
-                    System.out.println("Couldn't convert from bytes to image.");
+                } else {
+                    System.out.println("The frame couldn't be grabbed.");
                 }
-            } else {
-                System.out.println("The frame couldn't be grabbed.");
             }
-        }
-        System.out.println("Done");
+            System.out.println("Done");
         } catch (CameraNotFound e) {
             System.out.println(e.getMessage());
+            start.setEnabled(true);
+            stop.setEnabled(false);
         }
+        webSource.release();
+        panel.updateUI();
     }
 
 }

@@ -1,4 +1,6 @@
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import net.java.games.input.Controller;
@@ -239,6 +241,7 @@ public class ROVController extends javax.swing.JFrame {
             }
         } catch (JoyStickNotFound e) {
             System.out.println(e.getMessage());
+            System.out.println("ROV's Controller is exiting..");
             System.exit(0);
         }
         controllerNameSpace.setText(con.getName());
@@ -260,7 +263,7 @@ public class ROVController extends javax.swing.JFrame {
     }//GEN-LAST:event_stopButtonActionPerformed
 
     private void startStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startStreamActionPerformed
-        streaming = new VideoStreaming(getWidth(), getHeight(), streamPanel);
+        streaming = new VideoStreaming(getWidth(), getHeight(), streamPanel, startStream, stopStream);
         streaming.start();
         startStream.setEnabled(false);
         stopStream.setEnabled(true);
