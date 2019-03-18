@@ -4,7 +4,7 @@
 
 //Servos definitions
 Servo servo2;
-Servo backRight;
+Servo servo1;
 Servo servo4;
 Servo servo3;
 Servo servo6;
@@ -25,9 +25,8 @@ mid left	=	7
 mid right	= 	5
 front left 	= 	6
 front right = 	4
-*/
 
-/* Moves:
+Moves:
 Up: 3+4 clockwise
 Down: 3+4 counter-clockwise
 Front: 1+2+5+6 clockwise
