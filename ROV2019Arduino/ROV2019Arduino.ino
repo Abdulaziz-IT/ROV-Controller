@@ -44,52 +44,73 @@ void loop() {
 	if (command == "test") {
 		Serial.println("Test passed");
 	} else if (command == "front") {
+		moveFront();
+	} else if (command == "back") {
+		moveBack();
+	} else if (command == "left") {
+		moveLeft();
+	} else if (command == "right") {
+		moveRight();
+	} else if (command == "up") {
+		moveUp();
+	} else if (command == "down") {
+		moveDown();
+	} else if (command == "stop") {
+		stopMoving();
+	}
+	
+}
+
+void moveFront() {
 		backLeft.writeMicroseconds(1650);
 		backRight.writeMicroseconds(1650); 
 		frontLeft.writeMicroseconds(1650); 
-		frontRight.writeMicroseconds(1650); 
-		
+		frontRight.writeMicroseconds(1650); 		
 		Serial.println("ROV is moving front");
-	} else if (command == "back") {
+}
+
+void moveBack() {
 		backLeft.writeMicroseconds(1350); 
 		backRight.writeMicroseconds(1350); 
 		frontLeft.writeMicroseconds(1350); 
 		frontRight.writeMicroseconds(1350); 
-		
 		Serial.println("ROV is moving back");
-	} else if (command == "left") {
+}
+
+void moveLeft() {
 		backLeft.writeMicroseconds(1650);
 		frontLeft.writeMicroseconds(1650);
 		backRight.writeMicroseconds(1350); 
-		frontRight.writeMicroseconds(1350); 
-		
+		frontRight.writeMicroseconds(1350); 		
 		Serial.println("ROV is moving left");
-	} else if (command == "right") {
+}
+
+void moveRight() {
 		backLeft.writeMicroseconds(1350);
 		frontLeft.writeMicroseconds(1350);
 		backRight.writeMicroseconds(1650); 
-		frontRight.writeMicroseconds(1650); 
-		
+		frontRight.writeMicroseconds(1650); 		
 		Serial.println("ROV is moving right");
-	} else if (command == "up") {
+}
+
+void moveUp() {
 		midLeft.writeMicroseconds(1650); 
 		midRight.writeMicroseconds(1650); 
-
 		Serial.println("ROV is moving up");
-	} else if (command == "down") {
+}
+
+void moveDown() {
 		midLeft.writeMicroseconds(1350); 
 		midRight.writeMicroseconds(1350); 
-
 		Serial.println("ROV is moving down");
-	} else if (command == "stop") {
+}
+
+void stopMoving() {
 		backLeft.writeMicroseconds(1500); 
 		backRight.writeMicroseconds(1500); 
 		midLeft.writeMicroseconds(1500); 
 		midRight.writeMicroseconds(1500); 
 		frontLeft.writeMicroseconds(1500); 
-		frontRight.writeMicroseconds(1500); 
-		
+		frontRight.writeMicroseconds(1500); 		
 		Serial.println("ROV STOPPED");
-	}
-	
 }
