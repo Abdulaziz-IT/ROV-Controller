@@ -17,8 +17,8 @@ String command;
 bool moving = false;
 String state = "stop";
 
-//Pins:
 /*
+Pins:
 back left	=	3
 back right	=	2
 mid left	=	7
@@ -42,7 +42,7 @@ void setup() {
 
 void loop() {
 	
-	//Read the command from joystick
+	//Read the command from serial
 	command = Serial.readString();
 	
 	if (command == "test") {

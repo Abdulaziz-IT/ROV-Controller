@@ -1,6 +1,4 @@
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import net.java.games.input.Controller;
@@ -51,6 +49,10 @@ public class ROVController extends javax.swing.JFrame {
         streamPanel = new javax.swing.JPanel();
         startStream = new javax.swing.JButton();
         stopStream = new javax.swing.JButton();
+        gripperSlider = new javax.swing.JSlider();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        currentSliderValue = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -118,6 +120,14 @@ public class ROVController extends javax.swing.JFrame {
             }
         });
 
+        gripperSlider.setMaximum(180);
+        gripperSlider.setValue(0);
+        gripperSlider.setEnabled(false);
+
+        jLabel1.setText("0");
+
+        jLabel2.setText("180");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -131,7 +141,17 @@ public class ROVController extends javax.swing.JFrame {
                         .addGap(265, 265, 265)
                         .addComponent(startStream)
                         .addGap(109, 109, 109)
-                        .addComponent(stopStream)))
+                        .addComponent(stopStream))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(296, 296, 296)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(gripperSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(395, 395, 395)
+                        .addComponent(currentSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(160, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -173,7 +193,14 @@ public class ROVController extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(startStream)
                     .addComponent(stopStream))
-                .addContainerGap(94, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(gripperSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(currentSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
@@ -250,7 +277,7 @@ public class ROVController extends javax.swing.JFrame {
     }//GEN-LAST:event_findControllerButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        pollThread = new PollingData(con, movementOutput, buttonsOutput);
+        pollThread = new PollingData(con, movementOutput, buttonsOutput, gripperSlider, currentSliderValue);
         pollThread.start();
         startButton.setEnabled(false);
         stopButton.setEnabled(true);
@@ -315,7 +342,11 @@ public class ROVController extends javax.swing.JFrame {
     private javax.swing.JLabel buttonsLabel;
     private javax.swing.JTextArea buttonsOutput;
     private javax.swing.JTextField controllerNameSpace;
+    private javax.swing.JLabel currentSliderValue;
     private javax.swing.JButton findControllerButton;
+    private javax.swing.JSlider gripperSlider;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
