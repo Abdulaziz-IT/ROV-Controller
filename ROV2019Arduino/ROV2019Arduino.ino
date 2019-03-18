@@ -96,18 +96,19 @@ void moveBack() {
 }
 
 void moveLeft() {
-		backLeft.writeMicroseconds(1650);
-		frontLeft.writeMicroseconds(1650);
-		backRight.writeMicroseconds(1350);
-		frontRight.writeMicroseconds(1350);
-		Serial.println("ROV is moving left");
-}
-
-void moveRight() {
 		backLeft.writeMicroseconds(1350);
 		frontLeft.writeMicroseconds(1350);
 		backRight.writeMicroseconds(1650);
 		frontRight.writeMicroseconds(1650);	
+		Serial.println("ROV is moving left");
+}
+
+void moveRight() {
+		backLeft.writeMicroseconds(1650);
+		frontLeft.writeMicroseconds(1650);
+		backRight.writeMicroseconds(1350);
+		frontRight.writeMicroseconds(1350);
+
 		Serial.println("ROV is moving right");
 }
 
