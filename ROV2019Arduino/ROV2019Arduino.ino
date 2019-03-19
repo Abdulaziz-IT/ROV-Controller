@@ -113,10 +113,17 @@ void loop() {
       state = command;
     } else if (command == "Water") {
       waterHealth();
+    } else if (command == "pre1") {
+      preDefinedPath1();
+    } else if (command == "pre2") {
+      preDefinedPath2();
+    } else if (command == "pre3") {
+      preDefinedPath3();
     } else if (command.startsWith("pos")) {
       command = command.substring(3);
       moveGripper(command.toInt());
     }
+    
   }
 }
 
@@ -211,13 +218,87 @@ void moveGripper(int pos) {
 
   while (pos != gripper.read()) {
     if (pos > gripper.read()) {
-      gripper.write(gripper.read()+1);
+      gripper.write(gripper.read() + 1);
     } else {
-      gripper.write(gripper.read()-1);
+      gripper.write(gripper.read() - 1);
     }
     delay(15); //waits 15ms for the servo to reach the position
   }
-  
+
   String output = "Gripper is moved to " + pos;
   Serial.println(output);
+}
+
+
+void preDefinedPath1() {
+
+  //to achive the preDefined task
+  //the delay will make the ROV move in a certain direction for sometime
+
+  moveFront();
+  delay(2000);
+  rotateLeft();
+  moveFront();
+  delay(7000);
+  rotateRight();
+  moveFront();
+  delay(3000);
+  rotateRight();
+  moveFront();
+  delay(7000);
+  rotateLeft();
+  moveFront();
+  delay(3000);
+  rotateLeft();
+  moveFront();
+  delay(7000);
+  rotateRight();
+  moveFront();
+  delay(2000);
+
+
+}
+
+void preDefinedPath2() {
+
+  moveFront();
+  delay(7000);
+  rotateLeft();
+  moveFront();
+  delay(3000);
+  rotateLeft();
+  moveFront();
+  delay(5000);
+  rotateRight();
+  moveFront();
+  delay(3000);
+  rotateRight();
+  moveFront();
+  delay(5000);
+  rotateLeft();
+  moveFront();
+  delay(3000);
+  rotateLeft();
+  moveFront();
+  delay(7000);
+
+}
+
+void preDefinedPath3() {
+
+  moveFront();
+  delay(7000);
+  rotateRight();
+  moveFront();
+  delay(3000);
+  rotateRight();
+  moveFront();
+  delay(5000);
+  rotateLeft();
+  moveFront();
+  delay(3000);
+  rotateLeft();
+  moveFront();
+  delay(7000);
+
 }
