@@ -3,12 +3,17 @@ import arduino.*;
 
 public class ArduinoConnection {
 
-    Arduino ard;
+    static Arduino ard;
 
-    public ArduinoConnection() {
-        ard = new Arduino("COM3", 9600);
-        ard.openConnection();
-        // we can print connection opened if we want here
+    private ArduinoConnection() {
+    }
+
+    public static Arduino intialization() {
+        if (ard == null) {
+            ard = new Arduino("COM3", 9600);
+            ard.openConnection();
+        }
+        return ard;
     }
 
     public void sendToArduino(String command) {
@@ -21,7 +26,7 @@ public class ArduinoConnection {
         ard.serialWrite(ButtonCommand);
     }
 
-    public String recieveFromArduino()  {
+    public String recieveFromArduino() {
         String result = ard.serialRead();
 
         while (result.isEmpty()) {
@@ -31,10 +36,9 @@ public class ArduinoConnection {
         result = result.trim();
         return result;
     }
-    
-    public void closeConnection(){
+
+    public void closeConnection() {
         ard.closeConnection();
-        // we can print connection closed if we want here
     }
 
 }
