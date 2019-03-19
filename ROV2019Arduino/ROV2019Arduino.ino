@@ -102,7 +102,7 @@ void loop() {
       stopMoving();
       moving = false;
       state = command;
-    } else if (command == "water") {
+    } else if (command == "Water") {
       waterHealth();
     }
   }
@@ -183,10 +183,13 @@ void stopMoving() {
 
 void waterHealth() {
 
-  //thing
-  pH = random(1, 100);
-  tmp = random(1, 50);
-  info = pH + ":" + tmp;
+  int pH = random(1, 100);
+  int tmp = random(1, 50);
+
+  String pH_val = String(pH, DEC);
+  String tmp_val = String(tmp, DEC);
+  String info = pH_val + ":" + tmp_val;
+
   Serial.println(info);
 
 }
