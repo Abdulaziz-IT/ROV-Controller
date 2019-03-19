@@ -237,24 +237,43 @@ void preDefinedPath1() {
 
   moveFront();
   delay(2000);
+  stopMoving();
   rotateLeft();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(7000);
+  stopMoving();
   rotateRight();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(3000);
+  stopMoving();
   rotateRight();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(7000);
+  stopMoving();
   rotateLeft();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(3000);
+  stopMoving();
   rotateLeft();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(7000);
+  stopMoving();
   rotateRight();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(2000);
+  stopMoving();
 
 
 }
@@ -263,24 +282,43 @@ void preDefinedPath2() {
 
   moveFront();
   delay(7000);
+  stopMoving();
   rotateLeft();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(3000);
+  stopMoving();
   rotateLeft();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(5000);
+  stopMoving();
   rotateRight();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(3000);
+  stopMoving();
   rotateRight();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(5000);
+  stopMoving();
   rotateLeft();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(3000);
+  stopMoving();
   rotateLeft();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(7000);
+  stopMoving();
 
 }
 
@@ -288,17 +326,30 @@ void preDefinedPath3() {
 
   moveFront();
   delay(7000);
+  stopMoving();
   rotateRight();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(3000);
+  stopMoving();
   rotateRight();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(5000);
+  stopMoving();
   rotateLeft();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(3000);
+  stopMoving();
   rotateLeft();
+  delay(2500);
+  stopMoving();
   moveFront();
   delay(7000);
+  stopMoving();
 
 }
