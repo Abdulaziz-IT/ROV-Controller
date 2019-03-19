@@ -90,6 +90,14 @@ void loop() {
       rotateRight();
       moving = true;
       state = command;
+    } else if (command == "right" && !moving) {
+      moveRight();
+      moving = true;
+      state = command;
+    } else if (command == "left" && !moving) {
+      moveLeft();
+      moving = true;
+      state = command;
     } else if (command == "up" && !moving) {
       moveUp();
       moving = true;

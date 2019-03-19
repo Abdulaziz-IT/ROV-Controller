@@ -3,17 +3,19 @@ import arduino.*;
 
 public class ArduinoConnection {
 
-    static Arduino ard;
+    private Arduino ard;
+    private static ArduinoConnection con;
 
     private ArduinoConnection() {
+        ard = new Arduino("COM3", 9600);
+        ard.openConnection();
     }
 
-    public static Arduino intialization() {
-        if (ard == null) {
-            ard = new Arduino("COM3", 9600);
-            ard.openConnection();
+    public static ArduinoConnection intialization() {
+        if (con == null) {
+            con = new ArduinoConnection();
         }
-        return ard;
+        return con;
     }
 
     public void sendToArduino(String command) {

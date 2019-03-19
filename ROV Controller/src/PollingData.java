@@ -26,24 +26,26 @@ import net.java.games.input.Controller;
 public class PollingData extends Thread {
 
     Controller c;
-    JTextArea movementOutput, buttonOutput;
+    JTextArea log;
     JSlider slider;
     Component[] comps;
-    String movement;
-    boolean moving;
     JLabel sliderValue;
+    ArduinoConnection ard = ArduinoConnection.intialization();
+    Thread receiver;
+    boolean moving;
 
-    PollingData(Controller c, JTextArea movementOutput, JTextArea buttonOutput, JSlider slider, JLabel sliderValue) {
+    PollingData(Controller c, JTextArea log, JSlider slider, JLabel sliderValue) {
         this.c = c;
-        this.movementOutput = movementOutput;
-        this.buttonOutput = buttonOutput;
+        this.log = log;
         this.comps = c.getComponents();
         this.slider = slider;
         this.sliderValue = sliderValue;
+        this.receiver = new ReceivingArduino(log);
     }
 
     @Override
     public void run() {
+        receiver.start();
         while (!this.isInterrupted()) {
             c.poll();
 
@@ -59,34 +61,45 @@ public class PollingData extends Thread {
 
             slider.setValue(sliderDegree);
             sliderValue.setText(sliderDegree + "");
-
-            if (moving) {
-                if (comps[0].getPollData() > -0.9f && comps[0].getPollData() < 0.9f && comps[1].getPollData() > -0.9f && comps[1].getPollData() < 0.9f) {
-                    movementOutput.setText("It stopped.");
-                    moving = false;
+            if (comps[16].getPollData() == 1.0f) {
+                ard.sendToArduino("pos" + sliderDegree);
+                try {
+                    Thread.sleep(1000); //Give time to release the button.
+                } catch (InterruptedException ex) {
+                    System.out.println("The thread was interrupted while sleeping");
                 }
             }
-        }
 
+        }
+        receiver.interrupt();
     }
 
     public void getAxis() {
+        String movement;
+
         if (comps[1].getPollData() == -1.0f) {
             movement = "left";
-            movementOutput.setText("It's moving " + movement + ".");
             moving = true;
+            ard.sendToArduino(movement);
         } else if (comps[1].getPollData() == 1.0f) {
             movement = "right";
-            movementOutput.setText("It's moving " + movement + ".");
             moving = true;
+            ard.sendToArduino(movement);
         } else if (comps[0].getPollData() == -1.0f) {
-            movement = "forward";
-            movementOutput.setText("It's moving " + movement + ".");
+            movement = "front";
             moving = true;
+            ard.sendToArduino(movement);
         } else if (comps[0].getPollData() == 1.0f) {
-            movement = "backward";
-            movementOutput.setText("It's moving " + movement + ".");
+            movement = "back";
             moving = true;
+            ard.sendToArduino(movement);
+        }
+        if (moving) {
+            if (comps[0].getPollData() > -0.9f && comps[0].getPollData() < 0.9f && comps[1].getPollData() > -0.9f && comps[1].getPollData() < 0.9f) {
+                movement = "stop";
+                moving = false;
+                ard.sendToArduino(movement);
+            }
         }
     }
 
@@ -102,8 +115,15 @@ public class PollingData extends Thread {
                         buttonName = "Trigger";
                     } else if (i == 5) {
                         buttonName = "Thumb";
+                    } else if (i == 6) {
+                        buttonName = "Water";
                     }
-                    buttonOutput.setText("Button (" + buttonName + ") is pressed.");
+                    ard.sendToArduino(buttonName);
+                    try {
+                        Thread.sleep(1000); //Give time to release the button.
+                    } catch (InterruptedException ex) {
+                        System.out.println("The thread was interrupted while sleeping");
+                    }
                 }
             }
         }
@@ -118,5 +138,9 @@ public class PollingData extends Thread {
         returnValue *= 0.9;
 
         return returnValue;
+    }
+    
+    public void checkWater() {
+        ard.sendToArduino("Water");
     }
 }
