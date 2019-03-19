@@ -117,6 +117,12 @@ public class PollingData extends Thread {
                         buttonName = "Thumb";
                     } else if (i == 6) {
                         buttonName = "Water";
+                    } else if (i == 7) {
+                        buttonName = "pre1";
+                    }else if (i == 8) {
+                        buttonName = "pre2";
+                    }else if (i == 9) {
+                        buttonName = "pre3";
                     }
                     ard.sendToArduino(buttonName);
                     try {
@@ -139,7 +145,7 @@ public class PollingData extends Thread {
 
         return returnValue;
     }
-    
+
     public void checkWater() {
         ard.sendToArduino("Water");
     }
