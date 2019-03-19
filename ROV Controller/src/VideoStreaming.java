@@ -11,7 +11,6 @@ import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
 
-//Abdulaziz Waleed Alshememry.
 public class VideoStreaming extends Thread {
 
     Mat frame = new Mat();
@@ -41,13 +40,13 @@ public class VideoStreaming extends Thread {
                     try {
                         webSource.retrieve(frame); //Decodes and returns the grabbed video frame.
                         Imgcodecs.imencode(".jpg", frame, mem); //compresses the image and stores it in the memory buffer that is resized to fit the result.
-                        BufferedImage image = ImageIO.read(new ByteArrayInputStream(mem.toArray()));
+                        BufferedImage image = ImageIO.read(new ByteArrayInputStream(mem.toArray())); 
                         Graphics g = panel.getGraphics();
                         if (this.isInterrupted()) {
                             break;
                         }
                         g.drawImage(image, 0, 0, width, height, 0, 0, image.getWidth(), image.getHeight(), null); //This has a problem with interrupt                        
-                    } catch (IOException ex) {
+                    } catch (IOException ex) { //if an error occurs during reading.
                         System.out.println("Couldn't convert from bytes to image.");
                     }
                 } else {

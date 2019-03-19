@@ -6,8 +6,13 @@
             <file>file:/C:/Users/azzoz/Documents/NetBeansProjects/JoyStickController/src/JoyStickController.java</file>
         </group>
         <group>
+            <file>file:/C:/Users/azzoz/Documents/NetBeansProjects/ROV%20Controller/src/JoyStickNotFound.java</file>
+            <file>file:/C:/Users/azzoz/Documents/NetBeansProjects/ROV%20Controller/src/PollingData.java</file>
+            <file>file:/C:/Users/azzoz/Documents/NetBeansProjects/ROV%20Controller/src/ArduinoConnection.java</file>
             <file>file:/C:/Users/azzoz/Documents/NetBeansProjects/ROV%20Controller/src/ROVController.java</file>
             <file>file:/C:/Users/azzoz/Documents/NetBeansProjects/ROV%20Controller/src/VideoStreaming.java</file>
+            <file>file:/C:/Users/azzoz/Documents/NetBeansProjects/ROV%20Controller/src/CameraNotFound.java</file>
+            <file>file:/C:/Users/azzoz/Documents/NetBeansProjects/ROV%20Controller/src/Database.java</file>
         </group>
     </open-files>
 </project-private>
