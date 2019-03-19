@@ -9,6 +9,7 @@ Servo servo4;
 Servo servo3;
 Servo servo6;
 Servo servo5;
+Servo gripper;
 
 //Commands to be read
 String command;
@@ -62,7 +63,7 @@ void setup() {
   servo3.attach(5); //Mid-right servo
   servo6.attach(6); //Front-left servo
   servo5.attach(4); //Front-right servo
-
+  gripper.attach(12); //Gripper
 }
 
 void loop() {
@@ -112,6 +113,9 @@ void loop() {
       state = command;
     } else if (command == "Water") {
       waterHealth();
+    } else if (command.startsWith("pos")) {
+      command = command.substring(3);
+      moveGripper(command.toInt());
     }
   }
 }
@@ -191,13 +195,29 @@ void stopMoving() {
 
 void waterHealth() {
 
-  int pH = random(1, 100);
+  int pH = random(1, 8);
   int tmp = random(1, 50);
 
   String pH_val = String(pH, DEC);
   String tmp_val = String(tmp, DEC);
-  String info = pH_val + ":" + tmp_val;
+  String colon = ":";
+  String info = pH_val + colon + tmp_val;
 
   Serial.println(info);
 
+}
+
+void moveGripper(int pos) {
+
+  while (pos != gripper.read()) {
+    if (pos > gripper.read()) {
+      gripper.write(gripper.read()+1);
+    } else {
+      gripper.write(gripper.read()-1);
+    }
+    delay(15); //waits 15ms for the servo to reach the position
+  }
+  
+  String output = "Gripper is moved to " + pos;
+  Serial.println(output);
 }
