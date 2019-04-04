@@ -1,6 +1,20 @@
 
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.DefaultCaret;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import org.opencv.core.Core;
@@ -23,6 +37,8 @@ public class ROVController extends javax.swing.JFrame {
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+        DefaultCaret caret = (DefaultCaret) log.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
     @SuppressWarnings("unchecked")
@@ -45,8 +61,13 @@ public class ROVController extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         currentSliderValue = new javax.swing.JLabel();
-        waterButton = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+        jLabel3 = new javax.swing.JLabel();
+        waterButton1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        threshold = new javax.swing.JTextField();
+        nonBlack = new javax.swing.JButton();
+        cameraIndex = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -87,11 +108,11 @@ public class ROVController extends javax.swing.JFrame {
         streamPanel.setLayout(streamPanelLayout);
         streamPanelLayout.setHorizontalGroup(
             streamPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 577, Short.MAX_VALUE)
+            .addGap(0, 987, Short.MAX_VALUE)
         );
         streamPanelLayout.setVerticalGroup(
             streamPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 311, Short.MAX_VALUE)
+            .addGap(0, 471, Short.MAX_VALUE)
         );
 
         startStream.setText("Start Streaming");
@@ -117,13 +138,75 @@ public class ROVController extends javax.swing.JFrame {
 
         jLabel2.setText("180");
 
-        waterButton.setText("Check Water Health");
-        waterButton.setEnabled(false);
-        waterButton.addActionListener(new java.awt.event.ActionListener() {
+        jLayeredPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        jLabel3.setText("Actions");
+
+        waterButton1.setText("Recognize Image");
+        waterButton1.setEnabled(false);
+        waterButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                waterButtonActionPerformed(evt);
+                waterButton1ActionPerformed(evt);
             }
         });
+
+        jLabel4.setText("Threshold:");
+
+        threshold.setText("85");
+
+        nonBlack.setText("Remvoe non-black");
+        nonBlack.setEnabled(false);
+        nonBlack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nonBlackActionPerformed(evt);
+            }
+        });
+
+        jLayeredPane1.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(waterButton1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(threshold, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(nonBlack, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
+        jLayeredPane1.setLayout(jLayeredPane1Layout);
+        jLayeredPane1Layout.setHorizontalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                        .addGap(47, 47, 47)
+                        .addComponent(jLabel3)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(nonBlack, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                            .addComponent(waterButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(threshold, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))))
+                .addContainerGap())
+        );
+        jLayeredPane1Layout.setVerticalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jLayeredPane1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addGap(45, 45, 45)
+                .addComponent(waterButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(nonBlack)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(threshold, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        cameraIndex.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Camera 0", "Camera 1", "Camera 2", "Camera 3", "Camera 4" }));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -133,31 +216,41 @@ public class ROVController extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(buttonsLabel)
-                        .addGap(138, 138, 138)
-                        .addComponent(streamPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(waterButton)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(96, 96, 96)
+                        .addComponent(startStream)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(startStream)
-                                .addGap(109, 109, 109)
-                                .addComponent(stopStream))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(gripperSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(99, 99, 99)
+                                        .addComponent(currentSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(49, 49, 49))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(31, 31, 31)
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(gripperSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(130, 130, 130)
-                                .addComponent(currentSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(173, 173, 173))))
+                                .addGap(47, 47, 47)
+                                .addComponent(stopStream)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(20, 20, 20))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(buttonsLabel)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(182, 182, 182)
+                        .addComponent(streamPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(534, 534, 534)
+                        .addComponent(cameraIndex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 181, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,36 +264,37 @@ public class ROVController extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(startButton, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
                                 .addComponent(stopButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addContainerGap(524, Short.MAX_VALUE)))
+                    .addContainerGap(888, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(63, 63, 63)
-                        .addComponent(waterButton))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(streamPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(123, 123, 123)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(startStream)
-                    .addComponent(stopStream))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(gripperSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(cameraIndex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addComponent(streamPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(currentSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(357, 357, 357)
                 .addComponent(buttonsLabel)
-                .addGap(3, 3, 3)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(startStream)
+                            .addComponent(stopStream))
+                        .addGap(94, 94, 94)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(gripperSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(currentSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLayeredPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28))))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addContainerGap()
@@ -211,23 +305,10 @@ public class ROVController extends javax.swing.JFrame {
                     .addComponent(startButton)
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                     .addComponent(stopButton)
-                    .addContainerGap(487, Short.MAX_VALUE)))
+                    .addContainerGap(670, Short.MAX_VALUE)))
         );
 
         jTabbedPane1.addTab("Controller", jPanel1);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 986, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 606, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab("Test", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -242,6 +323,79 @@ public class ROVController extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void nonBlackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nonBlackActionPerformed
+        try {
+            double thresholding = Double.parseDouble(threshold.getText());
+            BufferedImage img = ((VideoStreaming) streaming).getImage();
+            File outputfile = new File("test.png");
+            ImageIO.write(img, "png", outputfile);
+            Picture p = Picture.getPicture("test.png");
+            p.removeNotBlack(thresholding);
+            img = (BufferedImage) p.getImage();
+            ImageIO.write(img, "png", outputfile);
+            File nonBlackImage = new File("test.png");
+            Desktop desktop = Desktop.getDesktop();
+            if (nonBlackImage.exists()) {
+                desktop.open(nonBlackImage);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "You have to put numbers only!");
+        } catch (IOException ex) {
+            Logger.getLogger(ROVController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_nonBlackActionPerformed
+
+    private void waterButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_waterButton1ActionPerformed
+        try {
+            Process process = Runtime.getRuntime().exec("python Image-Recognition.py test.png");
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String s;
+            // read the output from the command
+            System.out.println("Image recognition output:");
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
+            }
+            File recognizedImage = new File("test-recognized.jpg");
+            Desktop desktop = Desktop.getDesktop();
+            if (recognizedImage.exists()) {
+                desktop.open(recognizedImage);
+            }
+        } catch (IOException ex) {
+
+        }
+    }//GEN-LAST:event_waterButton1ActionPerformed
+
+    private void stopStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopStreamActionPerformed
+        streaming.interrupt();
+        startStream.setEnabled(true);
+        stopStream.setEnabled(false);
+        waterButton1.setEnabled(false);
+        nonBlack.setEnabled(false);
+    }//GEN-LAST:event_stopStreamActionPerformed
+
+    private void startStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startStreamActionPerformed
+        streaming = new VideoStreaming(getWidth(), getHeight(), streamPanel, startStream, stopStream, cameraIndex.getSelectedIndex());
+        streaming.start();
+        startStream.setEnabled(false);
+        stopStream.setEnabled(true);
+        waterButton1.setEnabled(true);
+        nonBlack.setEnabled(true);
+    }//GEN-LAST:event_startStreamActionPerformed
+
+    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
+        pollThread.interrupt();
+        stopButton.setEnabled(false);
+        startButton.setEnabled(true);
+    }//GEN-LAST:event_stopButtonActionPerformed
+
+    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
+        pollThread = new PollingData(con, log, gripperSlider, currentSliderValue);
+        pollThread.start();
+        startButton.setEnabled(false);
+        stopButton.setEnabled(true);
+    }//GEN-LAST:event_startButtonActionPerformed
 
     private void findControllerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findControllerButtonActionPerformed
 
@@ -263,40 +417,7 @@ public class ROVController extends javax.swing.JFrame {
         }
         controllerNameSpace.setText(con.getName());
         startButton.setEnabled(true);
-
     }//GEN-LAST:event_findControllerButtonActionPerformed
-
-    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        pollThread = new PollingData(con, log, gripperSlider, currentSliderValue);
-        pollThread.start();
-        startButton.setEnabled(false);
-        stopButton.setEnabled(true);
-        waterButton.setEnabled(true);
-    }//GEN-LAST:event_startButtonActionPerformed
-
-    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-        pollThread.interrupt();
-        stopButton.setEnabled(false);
-        startButton.setEnabled(true);
-    }//GEN-LAST:event_stopButtonActionPerformed
-
-    private void startStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startStreamActionPerformed
-        streaming = new VideoStreaming(getWidth(), getHeight(), streamPanel, startStream, stopStream);
-        streaming.start();
-        startStream.setEnabled(false);
-        stopStream.setEnabled(true);
-    }//GEN-LAST:event_startStreamActionPerformed
-
-    private void stopStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopStreamActionPerformed
-        streaming.interrupt();
-        startStream.setEnabled(true);
-        stopStream.setEnabled(false);
-    }//GEN-LAST:event_stopStreamActionPerformed
-
-    private void waterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_waterButtonActionPerformed
-        ((PollingData) pollThread).checkWater();
-
-    }//GEN-LAST:event_waterButtonActionPerformed
 
     public static void main(String args[]) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -330,28 +451,33 @@ public class ROVController extends javax.swing.JFrame {
             public void run() {
                 new ROVController().setVisible(true);
             }
-        });
+        });        
     }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel buttonsLabel;
+    private javax.swing.JComboBox<String> cameraIndex;
     private javax.swing.JTextField controllerNameSpace;
     private javax.swing.JLabel currentSliderValue;
     private javax.swing.JButton findControllerButton;
     private javax.swing.JSlider gripperSlider;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea log;
+    private javax.swing.JButton nonBlack;
     private javax.swing.JButton startButton;
     private javax.swing.JButton startStream;
     private javax.swing.JButton stopButton;
     private javax.swing.JButton stopStream;
     private javax.swing.JPanel streamPanel;
-    private javax.swing.JButton waterButton;
+    private javax.swing.JTextField threshold;
+    private javax.swing.JButton waterButton1;
     // End of variables declaration//GEN-END:variables
 }

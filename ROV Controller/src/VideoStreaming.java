@@ -19,18 +19,21 @@ public class VideoStreaming extends Thread {
     JPanel panel;
     JButton start;
     JButton stop;
+    BufferedImage image;
+    int camera;
 
-    public VideoStreaming(int width, int height, JPanel panel, JButton start, JButton stop) {
+    public VideoStreaming(int width, int height, JPanel panel, JButton start, JButton stop, int camera) {
         this.width = width;
         this.height = height;
         this.panel = panel;
         this.start = start;
         this.stop = stop;
+        this.camera = camera;
     }
 
     @Override
     public void run() {
-        VideoCapture webSource = new VideoCapture(0);
+        VideoCapture webSource = new VideoCapture(camera);
         try {
             if (!webSource.isOpened()) {
                 throw new CameraNotFound();
@@ -40,12 +43,12 @@ public class VideoStreaming extends Thread {
                     try {
                         webSource.retrieve(frame); //Decodes and returns the grabbed video frame.
                         Imgcodecs.imencode(".jpg", frame, mem); //compresses the image and stores it in the memory buffer that is resized to fit the result.
-                        BufferedImage image = ImageIO.read(new ByteArrayInputStream(mem.toArray())); 
+                        image = ImageIO.read(new ByteArrayInputStream(mem.toArray()));
                         Graphics g = panel.getGraphics();
                         if (this.isInterrupted()) {
                             break;
                         }
-                        g.drawImage(image, 0, 0, width, height, 0, 0, image.getWidth(), image.getHeight(), null); //This has a problem with interrupt                        
+                        g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), 0, 0, image.getWidth(), image.getHeight(), null); //This has a problem with interrupt                        
                     } catch (IOException ex) { //if an error occurs during reading.
                         System.out.println("Couldn't convert from bytes to image.");
                     }
@@ -61,6 +64,10 @@ public class VideoStreaming extends Thread {
         }
         webSource.release();
         panel.updateUI();
+    }
+
+    public BufferedImage getImage() {
+        return image;
     }
 
 }

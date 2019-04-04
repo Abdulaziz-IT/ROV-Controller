@@ -55,7 +55,7 @@ String state = "stop";
 
 void setup() {
   Serial.begin(9600);
-  Serial.setTimeout(500);
+  Serial.setTimeout(50);
   //Attaching pins to servos
   servo2.attach(3); //Back-left servo
   servo1.attach(2); //Back-right servo
@@ -73,7 +73,7 @@ void loop() {
   if (Serial.available() > 0)
   {
     command = Serial.readString();
-    if (command == "test") {
+    if (command == "Trigger") {
       Serial.println("Test passed");
     } else if (command == "front" && !moving) {
       moveFront();
@@ -211,7 +211,6 @@ void waterHealth() {
   String info = pH_val + colon + tmp_val;
 
   Serial.println(info);
-
 }
 
 void moveGripper(int pos) {
@@ -225,8 +224,7 @@ void moveGripper(int pos) {
     delay(15); //waits 15ms for the servo to reach the position
   }
 
-  String output = "Gripper is moved to " + pos;
-  Serial.println(output);
+  Serial.println(pos);  
 }
 
 

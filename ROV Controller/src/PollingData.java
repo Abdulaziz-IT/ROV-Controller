@@ -33,6 +33,7 @@ public class PollingData extends Thread {
     ArduinoConnection ard = ArduinoConnection.intialization();
     Thread receiver;
     boolean moving;
+    int sliderDegree;
 
     PollingData(Controller c, JTextArea log, JSlider slider, JLabel sliderValue) {
         this.c = c;
@@ -40,12 +41,11 @@ public class PollingData extends Thread {
         this.comps = c.getComponents();
         this.slider = slider;
         this.sliderValue = sliderValue;
-        this.receiver = new ReceivingArduino(log);
     }
 
     @Override
     public void run() {
-        receiver.start();
+        //receiver.start();
         while (!this.isInterrupted()) {
             c.poll();
 
@@ -57,49 +57,43 @@ public class PollingData extends Thread {
             getButtons();
 
             //Convert the float number to a 180 degree integer number
-            int sliderDegree = convertSliderValue(comps[12].getPollData());
+            sliderDegree = convertSliderValue(comps[12].getPollData());
 
             slider.setValue(sliderDegree);
             sliderValue.setText(sliderDegree + "");
-            if (comps[16].getPollData() == 1.0f) {
-                ard.sendToArduino("pos" + sliderDegree);
-                try {
-                    Thread.sleep(1000); //Give time to release the button.
-                } catch (InterruptedException ex) {
-                    System.out.println("The thread was interrupted while sleeping");
-                }
-            }
-
         }
         receiver.interrupt();
     }
 
     public void getAxis() {
-        String movement;
-
-        if (comps[1].getPollData() == -1.0f) {
-            movement = "left";
-            moving = true;
-            ard.sendToArduino(movement);
-        } else if (comps[1].getPollData() == 1.0f) {
-            movement = "right";
-            moving = true;
-            ard.sendToArduino(movement);
-        } else if (comps[0].getPollData() == -1.0f) {
-            movement = "front";
-            moving = true;
-            ard.sendToArduino(movement);
-        } else if (comps[0].getPollData() == 1.0f) {
-            movement = "back";
-            moving = true;
-            ard.sendToArduino(movement);
-        }
-        if (moving) {
+        String movement = null;
+        boolean newMove = false;
+        if (!moving) {
+            if (comps[1].getPollData() == -1.0f) {
+                movement = "left";
+                moving = true;
+            } else if (comps[1].getPollData() == 1.0f) {
+                movement = "right";
+                moving = true;
+            } else if (comps[0].getPollData() == -1.0f) {
+                movement = "front";
+                moving = true;
+            } else if (comps[0].getPollData() == 1.0f) {
+                movement = "back";
+                moving = true;
+            }
+            newMove = moving;
+        } else {
             if (comps[0].getPollData() > -0.9f && comps[0].getPollData() < 0.9f && comps[1].getPollData() > -0.9f && comps[1].getPollData() < 0.9f) {
                 movement = "stop";
                 moving = false;
-                ard.sendToArduino(movement);
+                newMove = true;                
             }
+        }
+        if (newMove) {
+            ard.sendToArduino(movement);
+            log.append("\nSending: " + movement);
+            log.append("\nReceiving: " + ard.recieveFromArduino());
         }
     }
 
@@ -111,25 +105,31 @@ public class PollingData extends Thread {
                         continue;
                     }
                     String buttonName = Integer.parseInt(comps[i].getIdentifier().getName()) + 1 + "";
-                    if (i == 4) {
-                        buttonName = "Trigger";
-                    } else if (i == 5) {
-                        buttonName = "Thumb";
-                    } else if (i == 6) {
-                        buttonName = "Water";
-                    } else if (i == 7) {
-                        buttonName = "pre1";
-                    }else if (i == 8) {
-                        buttonName = "pre2";
-                    }else if (i == 9) {
-                        buttonName = "pre3";
+                    switch (i) {
+                        case 4:
+                            buttonName = "Trigger";
+                            break;
+                        case 5:
+                            buttonName = "Thumb";
+                            break;
+                        case 6:
+                            buttonName = "Water";
+                            break;
+                        case 16:
+                            buttonName = "pos" + sliderDegree;
+                            break;
+                        default:
+                            break;
                     }
-                    ard.sendToArduino(buttonName);
+                    log.append("\nSending: " + buttonName);
+                    ard.sendToArduino(buttonName);                    
                     try {
-                        Thread.sleep(1000); //Give time to release the button.
+                        Thread.sleep(300); //Give time to release the button.
                     } catch (InterruptedException ex) {
                         System.out.println("The thread was interrupted while sleeping");
                     }
+                    
+                    log.append("\nReceiving: " + ard.recieveFromArduino());
                 }
             }
         }
@@ -144,9 +144,5 @@ public class PollingData extends Thread {
         returnValue *= 0.9;
 
         return returnValue;
-    }
-
-    public void checkWater() {
-        ard.sendToArduino("Water");
     }
 }
