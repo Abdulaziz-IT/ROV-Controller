@@ -19,7 +19,6 @@ public interface DigitalPicture
  public int getWidth(); // get the width of the picture in pixels
  public int getHeight(); // get the height of the picture in pixels
  public Image getImage(); // get the image from the picture
- public BufferedImage getBufferedImage(); // get the buffered image
  public int getBasicPixel(int x, int y); // get the pixel information as an int   
  public void setBasicPixel(int x, int y, int rgb); // set the pixel information
  public Pixel getPixel(int x, int y); // get the pixel information as an object

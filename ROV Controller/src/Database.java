@@ -23,7 +23,7 @@ public class Database {
     }
 
     private void openConnection() {
-        String URL = "jdbc:mariadb://137.135.109.234:3306/ROV_DB";
+        String URL = "jdbc:mariadb://40.87.4.132:3306/ROV_DB";
         String USER = "ROV";
         String PASS = "ROV123";
         try {
@@ -36,12 +36,25 @@ public class Database {
 
     }
 
-    public void insertRecord(int ph, int tmp) {
+    public void insertTemp(int tmp) {
         try {
             Statement s = conn.createStatement();
             Timestamp d = new Timestamp(System.currentTimeMillis());
 
-            String q = "INSERT INTO WaterQuality VALUES (  " + ph + ", " + tmp + ", '" + d + "') ";
+            String q = "INSERT INTO TempSheet VALUES (  " + tmp + ", '" + d + "') ";
+            s.execute(q);
+        } catch (SQLException e) {
+            System.out.println("The insert couldn't be completed due to:");
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+    
+    public void insertPh(double ph) {
+        try {
+            Statement s = conn.createStatement();
+            Timestamp d = new Timestamp(System.currentTimeMillis());
+
+            String q = "INSERT INTO pHSheet VALUES (  " + ph + ", '" + d + "') ";
             s.execute(q);
         } catch (SQLException e) {
             System.out.println("The insert couldn't be completed due to:");
@@ -49,10 +62,21 @@ public class Database {
         }
     }
 
-    public void deleteRecord(int ph) {
+    public void deletePh(double ph) {
         try {
             Statement s = conn.createStatement();
-            String q = "DELETE FROM WaterQuality WHERE pH = " + ph;
+            String q = "DELETE FROM pHSheet WHERE pH = " + ph;
+            s.execute(q);
+        } catch (SQLException ex) {
+            System.out.println("The removing couldn't be completed due to:");
+            System.out.println(ex.getLocalizedMessage());
+        }
+    }
+    
+    public void deleteTemperature(double temp) {
+        try {
+            Statement s = conn.createStatement();
+            String q = "DELETE FROM TempSheet WHERE Temperature = " + temp;
             s.execute(q);
         } catch (SQLException ex) {
             System.out.println("The removing couldn't be completed due to:");
@@ -60,17 +84,30 @@ public class Database {
         }
     }
 
-    public boolean recordExists(int ph) {
+    public boolean pHExists(double ph) {
         try {
             Statement s = conn.createStatement();
-            String q = "SELECT * FROM WaterQuality WHERE pH = " + ph;
+            String q = "SELECT * FROM pHSheet WHERE pH = " + ph;
             ResultSet rs = s.executeQuery(q);
             return rs.next();
         } catch (SQLException ex) {
             System.out.println("The result couldn't be completed due to:");
             System.out.println(ex.getLocalizedMessage());
         }
-        return false;
+        return true;
+    }
+    
+    public boolean tempExists(double ph) {
+        try {
+            Statement s = conn.createStatement();
+            String q = "SELECT * FROM TempSheet WHERE Temperature = " + ph;
+            ResultSet rs = s.executeQuery(q);
+            return rs.next();
+        } catch (SQLException ex) {
+            System.out.println("The result couldn't be completed due to:");
+            System.out.println(ex.getLocalizedMessage());
+        }
+        return true;
     }
 
     public void closeConnection() {

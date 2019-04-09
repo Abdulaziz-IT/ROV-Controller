@@ -1,7 +1,5 @@
 
-import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,7 +8,6 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -21,8 +18,8 @@ import org.opencv.core.Core;
 
 public class ROVController extends javax.swing.JFrame {
 
-    Controller con;
-    Thread pollThread;
+    Controller controllerConnection;
+    Thread joyStick;
     Thread streaming;
 
     public ROVController() {
@@ -63,7 +60,7 @@ public class ROVController extends javax.swing.JFrame {
         currentSliderValue = new javax.swing.JLabel();
         jLayeredPane1 = new javax.swing.JLayeredPane();
         jLabel3 = new javax.swing.JLabel();
-        waterButton1 = new javax.swing.JButton();
+        recognizeImage = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         threshold = new javax.swing.JTextField();
         nonBlack = new javax.swing.JButton();
@@ -142,11 +139,11 @@ public class ROVController extends javax.swing.JFrame {
 
         jLabel3.setText("Actions");
 
-        waterButton1.setText("Recognize Image");
-        waterButton1.setEnabled(false);
-        waterButton1.addActionListener(new java.awt.event.ActionListener() {
+        recognizeImage.setText("Recognize Image");
+        recognizeImage.setEnabled(false);
+        recognizeImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                waterButton1ActionPerformed(evt);
+                recognizeImageActionPerformed(evt);
             }
         });
 
@@ -163,7 +160,7 @@ public class ROVController extends javax.swing.JFrame {
         });
 
         jLayeredPane1.setLayer(jLabel3, javax.swing.JLayeredPane.DEFAULT_LAYER);
-        jLayeredPane1.setLayer(waterButton1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        jLayeredPane1.setLayer(recognizeImage, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(jLabel4, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(threshold, javax.swing.JLayeredPane.DEFAULT_LAYER);
         jLayeredPane1.setLayer(nonBlack, javax.swing.JLayeredPane.DEFAULT_LAYER);
@@ -182,7 +179,7 @@ public class ROVController extends javax.swing.JFrame {
                         .addContainerGap()
                         .addGroup(jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nonBlack, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
-                            .addComponent(waterButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(recognizeImage, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(jLayeredPane1Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -196,7 +193,7 @@ public class ROVController extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addGap(45, 45, 45)
-                .addComponent(waterButton1)
+                .addComponent(recognizeImage)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nonBlack)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
@@ -350,16 +347,21 @@ public class ROVController extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_nonBlackActionPerformed
 
-    private void waterButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_waterButton1ActionPerformed
+
+    private void recognizeImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_recognizeImageActionPerformed
         try {
             Process process = Runtime.getRuntime().exec("python Image-Recognition.py test.png");
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
             String s;
             // read the output from the command
             System.out.println("Image recognition output:");
+            int counter = 0;
             while ((s = stdInput.readLine()) != null) {
                 System.out.println(s);
+                counter++;
+                if (counter == 3) {
+                    break;
+                }
             }
             File recognizedImage = new File("test-recognized.jpg");
             Desktop desktop = Desktop.getDesktop();
@@ -369,13 +371,13 @@ public class ROVController extends javax.swing.JFrame {
         } catch (IOException ex) {
 
         }
-    }//GEN-LAST:event_waterButton1ActionPerformed
+    }//GEN-LAST:event_recognizeImageActionPerformed
 
     private void stopStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopStreamActionPerformed
         streaming.interrupt();
         startStream.setEnabled(true);
         stopStream.setEnabled(false);
-        waterButton1.setEnabled(false);
+        recognizeImage.setEnabled(false);
         nonBlack.setEnabled(false);
     }//GEN-LAST:event_stopStreamActionPerformed
 
@@ -384,19 +386,19 @@ public class ROVController extends javax.swing.JFrame {
         streaming.start();
         startStream.setEnabled(false);
         stopStream.setEnabled(true);
-        waterButton1.setEnabled(true);
+        recognizeImage.setEnabled(true);
         nonBlack.setEnabled(true);
     }//GEN-LAST:event_startStreamActionPerformed
 
     private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
-        pollThread.interrupt();
+        joyStick.interrupt();
         stopButton.setEnabled(false);
         startButton.setEnabled(true);
     }//GEN-LAST:event_stopButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
-        pollThread = new PollingData(con, log, gripperSlider, currentSliderValue);
-        pollThread.start();
+        joyStick = new JoyStickData(controllerConnection, log, gripperSlider, currentSliderValue);
+        joyStick.start();
         startButton.setEnabled(false);
         stopButton.setEnabled(true);
     }//GEN-LAST:event_startButtonActionPerformed
@@ -407,11 +409,11 @@ public class ROVController extends javax.swing.JFrame {
         try {
             for (Controller c : controllers) {
                 if (c.getType().toString().equalsIgnoreCase("STICK")) {
-                    con = c;
+                    controllerConnection = c;
                     break;
                 }
             }
-            if (con == null) {
+            if (controllerConnection == null) {
                 throw new JoyStickNotFound();
             }
         } catch (JoyStickNotFound e) {
@@ -419,9 +421,10 @@ public class ROVController extends javax.swing.JFrame {
             System.out.println("ROV's Controller is exiting..");
             System.exit(0);
         }
-        controllerNameSpace.setText(con.getName());
+        controllerNameSpace.setText(controllerConnection.getName());
         startButton.setEnabled(true);
     }//GEN-LAST:event_findControllerButtonActionPerformed
+
 
     private void cameraIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cameraIndexActionPerformed
         streaming.interrupt();
@@ -461,7 +464,7 @@ public class ROVController extends javax.swing.JFrame {
             public void run() {
                 new ROVController().setVisible(true);
             }
-        });        
+        });
     }
 
 
@@ -482,12 +485,12 @@ public class ROVController extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea log;
     private javax.swing.JButton nonBlack;
+    private javax.swing.JButton recognizeImage;
     private javax.swing.JButton startButton;
     private javax.swing.JButton startStream;
     private javax.swing.JButton stopButton;
     private javax.swing.JButton stopStream;
     private javax.swing.JPanel streamPanel;
     private javax.swing.JTextField threshold;
-    private javax.swing.JButton waterButton1;
     // End of variables declaration//GEN-END:variables
 }

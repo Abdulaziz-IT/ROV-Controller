@@ -17,6 +17,10 @@ public class ArduinoConnection {
         }
         return con;
     }
+    
+    public boolean checkConnection() {
+        return con != null;
+    }
 
     public void sendToArduino(String command) {
         ard.serialWrite(command);

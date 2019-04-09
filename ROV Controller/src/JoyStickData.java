@@ -23,7 +23,7 @@ import javax.swing.JTextArea;
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 
-public class PollingData extends Thread {
+public class JoyStickData extends Thread {
 
     Controller c;
     JTextArea log;
@@ -35,7 +35,7 @@ public class PollingData extends Thread {
     boolean moving;
     int sliderDegree;
 
-    PollingData(Controller c, JTextArea log, JSlider slider, JLabel sliderValue) {
+    JoyStickData(Controller c, JTextArea log, JSlider slider, JLabel sliderValue) {
         this.c = c;
         this.log = log;
         this.comps = c.getComponents();
@@ -49,7 +49,6 @@ public class PollingData extends Thread {
         while (!this.isInterrupted()) {
             c.poll();
 
-            //slider.setValue(comps[12].getPollData());
             //Get current axis values
             getAxis();
 
