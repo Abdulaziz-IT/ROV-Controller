@@ -48,7 +48,7 @@ public class VideoStreaming extends Thread {
                         if (this.isInterrupted()) {
                             break;
                         }
-                        g.drawImage(image, 0, 0, image.getWidth(), image.getHeight(), 0, 0, image.getWidth(), image.getHeight(), null); //This has a problem with interrupt                        
+                        g.drawImage(image, 0, 0, panel.getWidth(), panel.getHeight(), 0, 0, image.getWidth(), image.getHeight(), null); //This has a problem with interrupt                        
                     } catch (IOException ex) { //if an error occurs during reading.
                         System.out.println("Couldn't convert from bytes to image.");
                     }
