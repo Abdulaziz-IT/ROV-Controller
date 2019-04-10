@@ -86,7 +86,7 @@ public class JoyStickData extends Thread {
             if (comps[0].getPollData() > -0.9f && comps[0].getPollData() < 0.9f && comps[1].getPollData() > -0.9f && comps[1].getPollData() < 0.9f) {
                 movement = "stop";
                 moving = false;
-                newMove = true;                
+                newMove = true;
             }
         }
         if (newMove) {
@@ -111,23 +111,56 @@ public class JoyStickData extends Thread {
                         case 5:
                             buttonName = "Thumb";
                             break;
-                        case 6:
-                            buttonName = "Water";
+                        case 7: // Button 4
+                            if (!moving) {
+                                buttonName = "down";
+                                moving = true;
+                                break;
+                            }
                             break;
-                        case 16:
+                        case 9: // Button 6
+                            if (!moving) {
+                                buttonName = "up";
+                                moving = true;
+                                break;
+                            }
+                            break;
+                        case 10: // Button 7
+                            buttonName = "openGripper";
+                            break;
+                        case 11: // Button 8
+                            buttonName = "closeGripper";
+                            break;
+                        case 13: // Button 9
+                            if (!moving) {
+                                buttonName = "rotate left";
+                                moving = true;
+                                break;
+                            }
+                        case 14: // Button 10
+                            if (!moving) {
+                                buttonName = "rotate right";
+                                moving = true;
+                                break;
+                            }
+                        case 15: // Button 11
+                            buttonName = "stop";
+                            moving = false;
+                            break;
+                        case 16: // Button 12
                             buttonName = "pos" + sliderDegree;
                             break;
                         default:
                             break;
                     }
                     log.append("\nSending: " + buttonName);
-                    ard.sendToArduino(buttonName);                    
+                    ard.sendToArduino(buttonName);
                     try {
                         Thread.sleep(300); //Give time to release the button.
                     } catch (InterruptedException ex) {
                         System.out.println("The thread was interrupted while sleeping");
                     }
-                    
+
                     log.append("\nReceiving: " + ard.recieveFromArduino());
                 }
             }

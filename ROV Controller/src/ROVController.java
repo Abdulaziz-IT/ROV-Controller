@@ -64,6 +64,8 @@ public class ROVController extends javax.swing.JFrame {
         threshold = new javax.swing.JTextField();
         nonBlack = new javax.swing.JButton();
         cameraIndex = new javax.swing.JComboBox<>();
+        arduinoCLI = new javax.swing.JTextField();
+        sendButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -108,7 +110,7 @@ public class ROVController extends javax.swing.JFrame {
         );
         streamPanelLayout.setVerticalGroup(
             streamPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 415, Short.MAX_VALUE)
+            .addGap(0, 499, Short.MAX_VALUE)
         );
 
         startStream.setText("Start Streaming");
@@ -209,6 +211,14 @@ public class ROVController extends javax.swing.JFrame {
             }
         });
 
+        sendButton.setText("Send");
+        sendButton.setEnabled(false);
+        sendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -218,10 +228,17 @@ public class ROVController extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(96, 96, 96)
-                        .addComponent(startStream)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(96, 96, 96)
+                                .addComponent(startStream))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(44, 44, 44)
+                                .addComponent(arduinoCLI, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(sendButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -246,7 +263,7 @@ public class ROVController extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(182, 182, 182)
                 .addComponent(streamPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 86, Short.MAX_VALUE))
+                .addGap(0, 193, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(cameraIndex, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -284,10 +301,13 @@ public class ROVController extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(startStream)
                             .addComponent(stopStream))
-                        .addGap(94, 94, 94)
+                        .addGap(93, 93, 93)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(gripperSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(arduinoCLI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(sendButton))
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(currentSliderValue, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -379,7 +399,7 @@ public class ROVController extends javax.swing.JFrame {
     }//GEN-LAST:event_stopStreamActionPerformed
 
     private void startStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startStreamActionPerformed
-        streaming = new VideoStreaming(getWidth(), getHeight(), streamPanel, startStream, stopStream, cameraIndex.getSelectedIndex());
+        streaming = new VideoStreaming(streamPanel, startStream, stopStream, cameraIndex.getSelectedIndex());
         streaming.start();
         startStream.setEnabled(false);
         stopStream.setEnabled(true);
@@ -391,6 +411,7 @@ public class ROVController extends javax.swing.JFrame {
         joyStick.interrupt();
         stopButton.setEnabled(false);
         startButton.setEnabled(true);
+        sendButton.setEnabled(false);
     }//GEN-LAST:event_stopButtonActionPerformed
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
@@ -398,6 +419,7 @@ public class ROVController extends javax.swing.JFrame {
         joyStick.start();
         startButton.setEnabled(false);
         stopButton.setEnabled(true);
+        sendButton.setEnabled(true);
     }//GEN-LAST:event_startButtonActionPerformed
 
     private void findControllerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_findControllerButtonActionPerformed
@@ -424,10 +446,18 @@ public class ROVController extends javax.swing.JFrame {
 
 
     private void cameraIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cameraIndexActionPerformed
-        streaming.interrupt();
-        streaming = new VideoStreaming(getWidth(), getHeight(), streamPanel, startStream, stopStream, cameraIndex.getSelectedIndex());
+        stopStreamActionPerformed(null);
+        streaming = new VideoStreaming(streamPanel, startStream, stopStream, cameraIndex.getSelectedIndex());
         streaming.start();
     }//GEN-LAST:event_cameraIndexActionPerformed
+
+    private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
+        ArduinoConnection ard = ArduinoConnection.intialization();
+        ard.sendToArduino(arduinoCLI.getText());
+        log.append("\nSending: " + arduinoCLI.getText());
+        log.append("\nReceiving: " + ard.recieveFromArduino());
+        arduinoCLI.setText("");
+    }//GEN-LAST:event_sendButtonActionPerformed
 
     public static void main(String args[]) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -466,6 +496,7 @@ public class ROVController extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField arduinoCLI;
     private javax.swing.JLabel buttonsLabel;
     private javax.swing.JComboBox<String> cameraIndex;
     private javax.swing.JTextField controllerNameSpace;
@@ -482,6 +513,7 @@ public class ROVController extends javax.swing.JFrame {
     private javax.swing.JTextArea log;
     private javax.swing.JButton nonBlack;
     private javax.swing.JButton recognizeImage;
+    private javax.swing.JButton sendButton;
     private javax.swing.JButton startButton;
     private javax.swing.JButton startStream;
     private javax.swing.JButton stopButton;

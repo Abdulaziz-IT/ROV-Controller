@@ -15,16 +15,13 @@ public class VideoStreaming extends Thread {
 
     Mat frame = new Mat();
     MatOfByte mem = new MatOfByte();
-    int width, height;
     JPanel panel;
     JButton start;
     JButton stop;
     BufferedImage image;
     int camera;
 
-    public VideoStreaming(int width, int height, JPanel panel, JButton start, JButton stop, int camera) {
-        this.width = width;
-        this.height = height;
+    public VideoStreaming(JPanel panel, JButton start, JButton stop, int camera) {
         this.panel = panel;
         this.start = start;
         this.stop = stop;

@@ -22,12 +22,12 @@ public class Database {
         return db;
     }
 
-    private void openConnection() {
+    private void openConnection() { //Initializing the connection to the database
         String URL = "jdbc:mariadb://40.87.4.132:3306/ROV_DB";
         String USER = "ROV";
         String PASS = "ROV123";
         try {
-            conn = DriverManager.getConnection(URL, USER, PASS);
+            conn = DriverManager.getConnection(URL, USER, PASS); //Get the connection variable after passing these arguments
         } catch (SQLException ex) {
             System.out.println("The connection couldn't be established to the database.");
             System.out.println("The reason for that is: " + ex.getLocalizedMessage());
@@ -36,12 +36,12 @@ public class Database {
 
     }
 
-    public void insertTemp(int tmp) {
+    public void insertTemp(int tmp) { //Insert to the TempSheet table with the given value
         try {
             Statement s = conn.createStatement();
-            Timestamp d = new Timestamp(System.currentTimeMillis());
+            Timestamp d = new Timestamp(System.currentTimeMillis()); //Get the current timestamp
 
-            String q = "INSERT INTO TempSheet VALUES (  " + tmp + ", '" + d + "') ";
+            String q = "INSERT INTO TempSheet VALUES (  " + tmp + ", '" + d + "') "; //Insert the value to the table.
             s.execute(q);
         } catch (SQLException e) {
             System.out.println("The insert couldn't be completed due to:");
@@ -49,12 +49,12 @@ public class Database {
         }
     }
     
-    public void insertPh(double ph) {
+    public void insertPh(double ph) { //Insert to the pHSheet table with the given value
         try {
             Statement s = conn.createStatement();
-            Timestamp d = new Timestamp(System.currentTimeMillis());
+            Timestamp d = new Timestamp(System.currentTimeMillis()); //Get the current timestamp
 
-            String q = "INSERT INTO pHSheet VALUES (  " + ph + ", '" + d + "') ";
+            String q = "INSERT INTO pHSheet VALUES (  " + ph + ", '" + d + "') "; //Insert the value to the table.
             s.execute(q);
         } catch (SQLException e) {
             System.out.println("The insert couldn't be completed due to:");

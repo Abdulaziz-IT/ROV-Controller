@@ -53,17 +53,21 @@ String state = "stop";
   Left+down
 */
 
+int led = 0;
+
 void setup() {
   Serial.begin(9600);
   Serial.setTimeout(50);
   //Attaching pins to servos
-  servo2.attach(3); //Back-left servo
-  servo1.attach(2); //Back-right servo
+  servo2.attach(5); //Back-left servo
+  servo1.attach(4); //Back-right servo
   servo4.attach(7); //Mid-left servo
-  servo3.attach(5); //Mid-right servo
+  servo3.attach(3); //Mid-right servo
   servo6.attach(6); //Front-left servo
-  servo5.attach(4); //Front-right servo
+  servo5.attach(2); //Front-right servo
   gripper.attach(12); //Gripper
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
 }
 
 void loop() {
@@ -74,7 +78,13 @@ void loop() {
   {
     command = Serial.readString();
     if (command == "Trigger") {
-      Serial.println("Test passed");
+      if (led == 0) {
+        digitalWrite(13, HIGH);
+        led = 1;
+      } else {
+        digitalWrite(13, LOW);
+        led = 0;
+      }
     } else if (command == "front" && !moving) {
       moveFront();
       moving = true;
@@ -123,51 +133,51 @@ void loop() {
       command = command.substring(3);
       moveGripper(command.toInt());
     }
-    
+
   }
 }
 
 void moveFront() {
-  servo2.writeMicroseconds(1650);
-  servo1.writeMicroseconds(1650);
-  servo6.writeMicroseconds(1650);
-  servo5.writeMicroseconds(1650);
+  servo2.writeMicroseconds(1350);
+  servo1.writeMicroseconds(1350);
+  servo6.writeMicroseconds(1350);
+  servo5.writeMicroseconds(1350);
   Serial.println("ROV is moving front");
 }
 
 void moveBack() {
-  servo2.writeMicroseconds(1350);
-  servo1.writeMicroseconds(1350);
-  servo6.writeMicroseconds(1350);
-  servo5.writeMicroseconds(1350);
+  servo2.writeMicroseconds(1650);
+  servo1.writeMicroseconds(1650);
+  servo6.writeMicroseconds(1650);
+  servo5.writeMicroseconds(1650);
   Serial.println("ROV is moving back");
 }
 
 void rotateLeft() {
-  servo2.writeMicroseconds(1350);
-  servo6.writeMicroseconds(1350);
-  servo1.writeMicroseconds(1650);
-  servo5.writeMicroseconds(1650);
-  Serial.println("ROV is rotating to left");
-}
-
-void rotateRight() {
   servo2.writeMicroseconds(1650);
   servo6.writeMicroseconds(1650);
   servo1.writeMicroseconds(1350);
   servo5.writeMicroseconds(1350);
+  Serial.println("ROV is rotating to left");
+}
+
+void rotateRight() {
+  servo2.writeMicroseconds(1350);
+  servo6.writeMicroseconds(1350);
+  servo1.writeMicroseconds(1650);
+  servo5.writeMicroseconds(1650);
   Serial.println("ROV is rotating to right");
 }
 
 void moveUp() {
-  servo4.writeMicroseconds(1650);
-  servo3.writeMicroseconds(1650);
+  servo4.writeMicroseconds(1250);
+  servo3.writeMicroseconds(1250);
   Serial.println("ROV is moving up");
 }
 
 void moveDown() {
-  servo4.writeMicroseconds(1350);
-  servo3.writeMicroseconds(1350);
+  servo4.writeMicroseconds(1750);
+  servo3.writeMicroseconds(1750);
   Serial.println("ROV is moving down");
 }
 
@@ -180,23 +190,20 @@ void moveLeft() {
 }
 
 void moveRight() {
-  servo1.writeMicroseconds(1650);
-  servo6.writeMicroseconds(1650);
-  servo2.writeMicroseconds(1350);
-  servo5.writeMicroseconds(1350);
+  servo1.writeMicroseconds(1350);
+  servo6.writeMicroseconds(1350);
+  servo2.writeMicroseconds(1650);
+  servo5.writeMicroseconds(1650);
   Serial.println("ROV is moving right");
 }
 
 void stopMoving() {
-  if (state == "front" || state == "back" || state == "left" || state == "right") {
-    servo2.writeMicroseconds(1500);
-    servo1.writeMicroseconds(1500);
-    servo6.writeMicroseconds(1500);
-    servo5.writeMicroseconds(1500);
-  } else if (state == "up" || state == "down") {
-    servo4.writeMicroseconds(1500);
-    servo3.writeMicroseconds(1500);
-  }
+  servo2.writeMicroseconds(1500);
+  servo1.writeMicroseconds(1500);
+  servo6.writeMicroseconds(1500);
+  servo5.writeMicroseconds(1500);
+  servo4.writeMicroseconds(1500);
+  servo3.writeMicroseconds(1500);
   Serial.println("ROV HAS STOPPED");
 }
 
@@ -224,7 +231,7 @@ void moveGripper(int pos) {
     delay(15); //waits 15ms for the servo to reach the position
   }
 
-  Serial.println(pos);  
+  Serial.println(pos);
 }
 
 
