@@ -137,7 +137,7 @@ void loop() {
   }
 }
 
-void moveFront() {
+void moveFront() { //Moving the specified servo with the given directions
   servo2.writeMicroseconds(1350);
   servo1.writeMicroseconds(1350);
   servo6.writeMicroseconds(1350);
@@ -145,7 +145,7 @@ void moveFront() {
   Serial.println("ROV is moving front");
 }
 
-void moveBack() {
+void moveBack() { //Moving the specified servo with the given directions
   servo2.writeMicroseconds(1650);
   servo1.writeMicroseconds(1650);
   servo6.writeMicroseconds(1650);
@@ -153,7 +153,7 @@ void moveBack() {
   Serial.println("ROV is moving back");
 }
 
-void rotateLeft() {
+void rotateLeft() { //Moving the specified servo with the given directions
   servo2.writeMicroseconds(1650);
   servo6.writeMicroseconds(1650);
   servo1.writeMicroseconds(1350);
@@ -161,7 +161,7 @@ void rotateLeft() {
   Serial.println("ROV is rotating to left");
 }
 
-void rotateRight() {
+void rotateRight() { //Moving the specified servo with the given directions
   servo2.writeMicroseconds(1350);
   servo6.writeMicroseconds(1350);
   servo1.writeMicroseconds(1650);
@@ -169,13 +169,13 @@ void rotateRight() {
   Serial.println("ROV is rotating to right");
 }
 
-void moveUp() {
+void moveUp() { //Moving the specified servo with the given directions
   servo4.writeMicroseconds(1250);
   servo3.writeMicroseconds(1250);
   Serial.println("ROV is moving up");
 }
 
-void moveDown() {
+void moveDown() { //Moving the specified servo with the given directions
   servo4.writeMicroseconds(1750);
   servo3.writeMicroseconds(1750);
   Serial.println("ROV is moving down");
@@ -222,11 +222,11 @@ void waterHealth() {
 
 void moveGripper(int pos) {
 
-  while (pos != gripper.read()) {
+  while (pos != gripper.read()) { //Keep moving the gripper until it's reaching the specified position
     if (pos > gripper.read()) {
-      gripper.write(gripper.read() + 1);
+      gripper.write(gripper.read() + 1); //Opening
     } else {
-      gripper.write(gripper.read() - 1);
+      gripper.write(gripper.read() - 1); //Closing
     }
     delay(15); //waits 15ms for the servo to reach the position
   }
